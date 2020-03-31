@@ -1,20 +1,13 @@
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:2.2-stretch-slim AS base
+FROM microsoft/dotnet:2.2-sdk AS build
 WORKDIR /app
-EXPOSE 80
 
-FROM mcr.microsoft.com/dotnet/core/sdk:2.2-stretch AS build
-WORKDIR /src
-COPY ["TimeToGetAWatch/TimeToGetAWatch.csproj", "TimeToGetAWatch/"]
-RUN dotnet restore "TimeToGetAWatch/TimeToGetAWatch.csproj"
-COPY . .
-WORKDIR "/src/TimeToGetAWatch"
-RUN dotnet build "TimeToGetAWatch.csproj" -c Release -o /app/build
+COPY . ./TimeToGetAWatch
+WORKDIR /app/TimeToGetAWatch
+RUN dotnet publish "TimeToGetAWatch.csproj" -c Release -o out
 
-FROM build AS publish
-RUN dotnet publish "TimeToGetAWatch.csproj" -c Release -o /app/publish
-
-FROM base AS final
+FROM microsoft/dotnet:2.2-aspnetcore-runtime AS runtime
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=build /app/TimeToGetAWatch/out ./
 ENTRYPOINT ["dotnet", "TimeToGetAWatch.dll"]
+EXPOSE 8080
