@@ -17,15 +17,15 @@ namespace ItsTestingTime.Controllers
     {
         private TestService testService = new TestService();
 
-        // GET api/test/{times}
-        [HttpGet("{times}")]
+        // GET api/test}
+        [HttpGet()]
         [ProducesResponseType(typeof(string), 200)]
-        public ActionResult<List<Result>> GetResults(List<int> times)
+        public ActionResult<List<Result>> GetResults()
         {
             try
             {
-                Result result = testService.GetTestResult();
-                return Ok(result);
+                testService.GetLoadTestResults(5);
+                return Ok();
 
             }
             catch(Exception ex)

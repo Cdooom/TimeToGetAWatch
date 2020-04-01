@@ -1,8 +1,9 @@
 ﻿using ItsTestingTime.Models;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ItsTestingTime.Services
@@ -16,6 +17,7 @@ namespace ItsTestingTime.Services
                 Result result = new Result();
                 var sw = new Stopwatch();
                 sw.Start();
+                result.StartTime = DateTime.Now.ToLongTimeString();
                 var response = wc.DownloadData("http://localhost:80/api/time");
                 sw.Stop();
                 string responseString = wc.Encoding.GetString(response);
@@ -29,10 +31,36 @@ namespace ItsTestingTime.Services
                 }
 
                 result.TimeToLastByte = $"{sw.ElapsedMilliseconds.ToString()} ms";
+                Console.WriteLine("Bruhhhhhh, I ran");
                 return result;
             }
 
         }
 
+        public void GetLoadTestResults(int runsPerSecond)
+        {
+            Task[] taskArray = new Task[runsPerSecond];
+            List<Result> resultArray = new List<Result>();
+            for (int i = 0; i < taskArray.Length; i++)
+            {
+                taskArray[i] = Task.Factory.StartNew((Object obj) =>
+                {
+                    Result result = obj as Result;
+                    result = GetTestResult();
+                    if (result == null)
+                        return;
+                    result.ThreadNum = Thread.CurrentThread.ManagedThreadId;
+                    resultArray.Add(result);
+
+                }, new Result());
+            }
+            Task.WaitAll(taskArray);
+            foreach (var item in resultArray)
+            {
+                if (item != null)
+                    Console.WriteLine("Task #{0} created at #{1}, ran #{2} for #{3}.",
+                                      item.ThreadNum, item.StartTime, item.IsSuccessful, item.TimeToLastByte);
+            }
+        }
     }
 }
