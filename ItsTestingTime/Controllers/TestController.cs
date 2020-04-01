@@ -24,7 +24,7 @@ namespace ItsTestingTime.Controllers
         {
             try
             {
-                testService.GetLoadTestResults(5);
+                testService.GetLoadTestResults(100);
                 return Ok();
 
             }

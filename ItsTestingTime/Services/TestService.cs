@@ -31,7 +31,7 @@ namespace ItsTestingTime.Services
                 }
 
                 result.TimeToLastByte = $"{sw.ElapsedMilliseconds.ToString()} ms";
-                Console.WriteLine("Bruhhhhhh, I ran");
+                Console.WriteLine(responseString);
                 return result;
             }
 
@@ -52,7 +52,7 @@ namespace ItsTestingTime.Services
                     result.ThreadNum = Thread.CurrentThread.ManagedThreadId;
                     resultArray.Add(result);
 
-                }, new Result());
+                }, CancellationToken.None);
             }
             Task.WaitAll(taskArray);
             foreach (var item in resultArray)
@@ -62,5 +62,8 @@ namespace ItsTestingTime.Services
                                       item.ThreadNum, item.StartTime, item.IsSuccessful, item.TimeToLastByte);
             }
         }
+
+        //Method to Call Load Test Function. Sleep every second. Add to another result array. Print out
+        //Method to calculate average of array.
     }
 }
