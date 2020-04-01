@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using TimeToGetAWatch.Models;
 
@@ -13,11 +14,22 @@ namespace TimeToGetAWatch.Controllers
         [ProducesResponseType(typeof(string), 200)]
         public ActionResult<Time> Get()
         {
-            DateTime currentDateTime = DateTime.Now;
-            string now = currentDateTime.ToString();
-            return new Time {
-                DateTime = now
-            };
+            try
+            {
+                DateTime currentDateTime = DateTime.Now;
+                string now = currentDateTime.ToString();
+                return Ok(new Time
+                {
+                    DateTime = now
+                });
+            }
+
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+            
         }
 
     }
