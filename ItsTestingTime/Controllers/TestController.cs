@@ -4,10 +4,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ItsTestingTime.Controllers
 {
@@ -20,11 +16,11 @@ namespace ItsTestingTime.Controllers
         // GET api/test/{runs}}
         [HttpGet("{runs}")]
         [ProducesResponseType(typeof(string), 200)]
-        public ActionResult<List<Result>> GetLoadTestResults(int runs)
+        public ActionResult<List<Result>> GetSingleLoadResult(int runs)
         {
             try
             {
-                List<Result> runResults = testService.GetLoadTestResults(runs);
+                List<Result> runResults = testService.RunConcurrentCalls(runs).Result;
                 return Ok(runResults);
 
             }
@@ -34,6 +30,44 @@ namespace ItsTestingTime.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+
+        // GET api/test/{iterations}/{runs}}
+        [HttpGet("{iterations}/{runs}")]
+        [ProducesResponseType(typeof(string), 200)]
+        public ActionResult<List<Result>> GetMultipleLoadResults(int iterations, int runs)
+        {
+            try
+            {
+                List<Result> runResults = testService.SimulateRunsOverTime(iterations, runs).Result;
+                return Ok(runResults);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        // GET api/test/{iterations}/{runs}}
+        [HttpGet("summary/{iterations}/{runs}")]
+        [ProducesResponseType(typeof(string), 200)]
+        public ActionResult<List<Result>> GetMultipleLoadResultsWithSummary(int iterations, int runs)
+        {
+            try
+            {
+                Summary summary = testService.SimulateRunsOverTimeWithSummary(iterations, runs);
+                return Ok(summary);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
 
     }
 }
