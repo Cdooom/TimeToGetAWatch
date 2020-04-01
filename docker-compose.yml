@@ -1,0 +1,12 @@
+version: '3'
+services:
+  timetogetawatch:
+    build: ./TimeToGetAWatch
+    ports:
+      - "80:80"
+  itstestingtime:
+    build: ./ItsTestingTime
+    ports:
+      - "81:81"
+    depends_on:
+      - "timetogetawatch"
