@@ -1,22 +1,13 @@
-#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:2.2-stretch-slim AS base
+FROM microsoft/dotnet:2.2-sdk AS build
 WORKDIR /app
-EXPOSE 80
-EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/core/sdk:2.2-stretch AS build
-WORKDIR /src
-COPY ["ItsTestingTime/ItsTestingTime.csproj", "ItsTestingTime/"]
-RUN dotnet restore "ItsTestingTime/ItsTestingTime.csproj"
-COPY . .
-WORKDIR "/src/ItsTestingTime"
-RUN dotnet build "ItsTestingTime.csproj" -c Release -o /app/build
+COPY . ./ItsTestingTime
+WORKDIR /app/ItsTestingTime
+RUN dotnet publish "ItsTestingTime.csproj" -c Release -o out
 
-FROM build AS publish
-RUN dotnet publish "ItsTestingTime.csproj" -c Release -o /app/publish
-
-FROM base AS final
+FROM microsoft/dotnet:2.2-aspnetcore-runtime AS runtime
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=build /app/ItsTestingTime/out ./
 ENTRYPOINT ["dotnet", "ItsTestingTime.dll"]
+EXPOSE 80

@@ -10,4 +10,4 @@ FROM microsoft/dotnet:2.2-aspnetcore-runtime AS runtime
 WORKDIR /app
 COPY --from=build /app/TimeToGetAWatch/out ./
 ENTRYPOINT ["dotnet", "TimeToGetAWatch.dll"]
-EXPOSE 8080
+EXPOSE 80
