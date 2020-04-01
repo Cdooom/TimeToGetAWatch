@@ -1,4 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ItsTestingTime.Models;
+using ItsTestingTime.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ItsTestingTime.Controllers
 {
@@ -6,12 +15,24 @@ namespace ItsTestingTime.Controllers
     [ApiController]
     public class TestController : ControllerBase
     {
+        private TestService testService = new TestService();
 
         // GET api/test/{times}
         [HttpGet("{times}")]
-        public ActionResult<string> Get(int times)
+        [ProducesResponseType(typeof(string), 200)]
+        public ActionResult<List<Result>> GetResults(List<int> times)
         {
-            return "value";
+            try
+            {
+                Result result = testService.GetTestResult();
+                return Ok(result);
+
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
 
     }
