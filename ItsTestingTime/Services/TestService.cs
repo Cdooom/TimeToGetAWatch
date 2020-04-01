@@ -14,33 +14,43 @@ namespace ItsTestingTime.Services
         {
             using (var wc = new WebClient())
             {
-                Result result = new Result();
-                var sw = new Stopwatch();
-                sw.Start();
-                result.StartTime = DateTime.Now.ToLongTimeString();
-                var response = wc.DownloadData("http://localhost:80/api/time");
-                sw.Stop();
-                string responseString = wc.Encoding.GetString(response);
-                if (responseString.Contains("dateTime"))
+                
+                try
                 {
-                    result.IsSuccessful = "Success";
-                }
-                else
-                {
-                    result.IsSuccessful = "Failed";
-                }
+                    Result result = new Result();
+                    var sw = new Stopwatch();
+                    sw.Start();
+                    result.StartTime = DateTime.Now.ToLongTimeString();
+                    var response = wc.DownloadData("http://localhost:80/api/time");
+                    sw.Stop();
+                    string responseString = wc.Encoding.GetString(response);
+                    if (responseString.Contains("dateTime"))
+                    {
+                        result.IsSuccessful = "Success";
+                    }
+                    else
+                    {
+                        result.IsSuccessful = "Failed";
+                    }
 
-                result.TimeToLastByte = $"{sw.ElapsedMilliseconds.ToString()} ms";
-                Console.WriteLine(responseString);
-                return result;
+                    result.TimeToLastByte = $"{sw.ElapsedMilliseconds.ToString()} ms";
+                    Console.WriteLine(responseString);
+                    return result;
+                }
+                catch()
+                {
+                    return new Result() { IsSuccessful = "Failed", TimeToLastByte = "0" };
+                }
+                
             }
 
         }
 
-        public void GetLoadTestResults(int runsPerSecond)
+        public List<Result> GetLoadTestResults(int runs)
         {
-            Task[] taskArray = new Task[runsPerSecond];
+            Task[] taskArray = new Task[runs];
             List<Result> resultArray = new List<Result>();
+
             for (int i = 0; i < taskArray.Length; i++)
             {
                 taskArray[i] = Task.Factory.StartNew((Object obj) =>
@@ -58,9 +68,10 @@ namespace ItsTestingTime.Services
             foreach (var item in resultArray)
             {
                 if (item != null)
-                    Console.WriteLine("Task #{0} created at #{1}, ran #{2} for #{3}.",
+                    Console.WriteLine("Task #{0} created at {1}, ran {2} for {3}.",
                                       item.ThreadNum, item.StartTime, item.IsSuccessful, item.TimeToLastByte);
             }
+            return resultArray;
         }
 
         //Method to Call Load Test Function. Sleep every second. Add to another result array. Print out
