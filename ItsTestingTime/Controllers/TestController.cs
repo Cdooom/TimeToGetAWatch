@@ -31,7 +31,6 @@ namespace ItsTestingTime.Controllers
             }
         }
 
-
         // GET api/test/{iterations}/{runs}}
         [HttpGet("{iterations}/{runs}")]
         [ProducesResponseType(typeof(string), 200)]
@@ -50,7 +49,7 @@ namespace ItsTestingTime.Controllers
             }
         }
 
-        // GET api/test/{iterations}/{runs}}
+        // GET api/test/summary/{iterations}/{runs}}
         [HttpGet("summary/{iterations}/{runs}")]
         [ProducesResponseType(typeof(string), 200)]
         public ActionResult<List<Result>> GetMultipleLoadResultsWithSummary(int iterations, int runs)

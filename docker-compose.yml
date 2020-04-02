@@ -9,6 +9,6 @@ services:
     ports:
       - "81:81"
     environment:
-    - URI="http://timetogetawatch:80/api/time"
+    - URI=http://timetogetawatch:80/api/time
     depends_on:
       - "timetogetawatch"

@@ -29,8 +29,6 @@ namespace TimeToGetAWatch.Controllers
                 Console.WriteLine(ex);
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-            
         }
-
     }
 }
