@@ -20,7 +20,7 @@ namespace ItsTestingTime.Services
                     var sw = new Stopwatch();
                     sw.Start();
                     result.StartTime = DateTime.Now.ToLongTimeString();
-                    var response = wc.DownloadData(Environment.GetEnvironmentVariable("uri"));
+                    var response = wc.DownloadData(Environment.GetEnvironmentVariable("URI"));
                     sw.Stop();
                     string responseString = wc.Encoding.GetString(response);
                     if (responseString.Contains("dateTime"))
