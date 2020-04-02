@@ -20,7 +20,7 @@ namespace ItsTestingTime.Services
                     var sw = new Stopwatch();
                     sw.Start();
                     result.StartTime = DateTime.Now.ToLongTimeString();
-                    var response = wc.DownloadData("http://localhost:80/api/time");
+                    var response = wc.DownloadData("http://timetogetawatch:80/api/time");
                     sw.Stop();
                     string responseString = wc.Encoding.GetString(response);
                     if (responseString.Contains("dateTime"))
